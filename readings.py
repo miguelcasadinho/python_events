@@ -85,8 +85,8 @@ try:
         # Use pandas to read the SQL query into a DataFrame
         df = pd.read_sql_query(query, connection)
 
-        # Format the 'Ultima Leitura' column to 'DD/MM/YYYY HH:MM'
-        df['Ultima Leitura'] = pd.to_datetime(df['Ultima Leitura']).dt.strftime('%d/%m/%Y %H:%M')
+         # Ensure 'Ultima Leitura' column is in UTC before formatting
+        df['Ultima Leitura'] = pd.to_datetime(df['Ultima Leitura'], utc=True).dt.strftime('%d/%m/%Y %H:%M')
 
         # Convert 'Leitura1' column to integer with zero decimals
         df['Leitura1'] = df['Leitura1'].astype(int)
@@ -103,7 +103,9 @@ try:
         print(f"readings_{timestamp}.csv")
 
 except Exception as e:
-    print(f"Error: {e}")
+    import traceback
+    print("An error occurred:")
+    traceback.print_exc()  # Print the full stack trace for debugging
 
 #finally:
     # The connection is automatically closed when the context manager exits
